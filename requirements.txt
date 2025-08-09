@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a550a408a094db47c97cef1920698c5f6ac3d489a7dd9254899f237fc1fbee60
-size 266
+# Core ML
+torch==2.6.0
+transformers==4.54.0
+datasets==4.0.0
+huggingface-hub==0.34.3
+tokenizers==0.21.4
+safetensors==0.5.3
+
+# Data handling
+pandas==2.3.1
+numpy==2.3.2
+pyarrow==21.0.0
+
+# Serving
+Flask==3.1.1
+gunicorn==23.0.0
+
+# Utilities
+tqdm==4.67.1
+requests==2.32.4
