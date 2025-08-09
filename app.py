@@ -7,6 +7,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 # Load Hugging Face model and tokenizer
+mode_path=os.environ.get("MODEL_PATH", "models/my_model.pth")
 model = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False)
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
