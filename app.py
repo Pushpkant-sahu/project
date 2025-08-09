@@ -1,20 +1,13 @@
-# app.py
-
+import os
 import torch
 from flask import Flask, request, render_template
-import numpy as np
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-
-# Load Hugging Face model and tokenizer
-mode_path=os.environ.get("MODEL_PATH", "models/my_model.pth")
-model = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False)
-
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-
+# Load model & tokenizer
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 model.eval()
-
 
 app = Flask(__name__)
 
@@ -24,22 +17,15 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Extract single input value from form
-    input_val = float(request.form['input_value'])  # Adjust type if needed (int/float)
-    final_features = [[input_val]]  # 2D array, shape (1, 1)
-
-    # Convert input to PyTorch tensor
-    input_tensor = torch.tensor(final_features, dtype=torch.float32)
-
-    # Make prediction
+    text = request.form['input_text']  # name="input_text" in HTML form
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+    
     with torch.no_grad():
-        prediction = model(input_tensor)
-        predicted_class = torch.argmax(prediction, dim=1).item()
+        outputs = model(**inputs)
+        predicted_class = torch.argmax(outputs.logits, dim=1).item()
 
-    # Interpret prediction
-    output = 'Placed' if predicted_class == 1 else 'Not Placed'
-
-    return render_template('index.html', prediction_text=f'Prediction: {output}')
+    return render_template('index.html', prediction_text=f"Predicted Severity: {predicted_class}")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
