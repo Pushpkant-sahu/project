@@ -3,8 +3,8 @@ import torch
 from flask import Flask, request, render_template
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-# Load model & tokenizer
-model_name = "bert-base-uncased"
+# 🔹 Use a smaller model
+model_name = "distilbert-base-uncased"  # Smaller than bert-base-uncased
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 model.eval()
